@@ -5,7 +5,7 @@ color: green;
 */
 
 body {
-    background: url(../SearchEngine/images/news.jpg) no-repeat center;
+   /* background: url(../SearchEngine/images/news.jpg) no-repeat center;*/
     /*#222;*/
 
     width: 100%;
@@ -122,14 +122,13 @@ label {
     width: 16px;
 }
 
-.logo {
-    background: transparent url(../SearchEngine/images/logo.jpg) no-repeat top left;
-
+.smalllogo{
+    display: inline-block;
+    width:20%;
+    height:auto;
 }
-
 .searchbox{
-    background:  rgba(15, 15, 15,0.7);
-
+    background:  rgba(15, 15, 15,0.9);
     background-clip: padding-box;
     text-align:center;
     border-radius:         3px;
@@ -138,4 +137,7 @@ label {
     margin: 50px auto;
     padding: 0;
     width: 800px;
+}
+.navigation{
+    background-color: #2b669a;
 }

@@ -1,0 +1,30 @@
+{% extends "SearchEngine/header.html" %}
+
+ {% block content %}
+     {% load staticfiles %}
+   <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand pull-left" href=""> <img src="{% static "SearchEngine/images/logo.png" %}"  ></a>
+    </div>
+    <ul class="nav navbar-nav pull-left">
+
+      <li class="active"><a href="">Search</a></li>
+      <li><a href="#">Crawl</a></li>
+    </ul>
+  </div>
+
+
+     <div id="custom-search-input">
+        <div class="input-group col-md-6">
+            <input type="text" class="  search-query form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button class="btn btn-danger" type="button">
+                    <span class=" glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+</nav>
+
+      {% endblock %}
