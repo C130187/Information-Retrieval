@@ -5,11 +5,11 @@ color: green;
 */
 
 body {
-    background: url(images/news.jpg) no-repeat center;
+    background: url(../SearchEngine/images/news.jpg) no-repeat center;
     /*#222;*/
 
     width: 100%;
-    height:100%;
+    height: 100%;
 }
 
 form {
@@ -40,6 +40,7 @@ form {
 .submit .form{
     color:white;
 }
+/*
 
 input {
     background: transparent;
@@ -50,8 +51,7 @@ input {
     border-radius:         26px;
    /* -moz-border-radius:    26px;
     -o-border-radius:      26px;
-    -webkit-border-radius: 26px;*/
-
+    -webkit-border-radius: 26px;*//*
     box-shadow:         inset 0 0 5px rgba(0, 0, 0, 0.1),
                         0 1px 0 rgba(255, 255, 255, 0.5),
                         inset 0 1px 2px rgba(0, 0, 0, 0.3),
@@ -69,7 +69,7 @@ input {
                         inset 0 1px 2px rgba(0, 0, 0, 0.3),
                         0 0 40px rgba(255, 255, 255, 0.3);
 
-    /*color: #333;*/
+    /*color: #333;*//*
     color:white;
     height: 26px;
     margin: 137px 80px 0 80px;
@@ -104,7 +104,7 @@ input:focus {
                         0 1px 0 rgba(255, 255, 255, 0.7),
                         inset 0 1px 2px rgba(0, 0, 0, 0.4),
                         0 0 40px rgba(255, 255, 255, 0.5);*/
-}
+/*}*/
 
 a {
       text-decoration:none;
@@ -120,4 +120,22 @@ label {
     text-indent: -99999px;
     top: -21px;
     width: 16px;
+}
+
+.logo {
+    background: transparent url(../SearchEngine/images/logo.jpg) no-repeat top left;
+
+}
+
+.searchbox{
+    background:  rgba(15, 15, 15,0.7);
+
+    background-clip: padding-box;
+    text-align:center;
+    border-radius:         3px;
+    box-shadow:         0 1px 5px #000;
+    height: 400px;
+    margin: 50px auto;
+    padding: 0;
+    width: 800px;
 }

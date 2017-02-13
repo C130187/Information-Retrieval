@@ -1,10 +1,39 @@
 {% extends "SearchEngine/header.html" %}
 
  {% block content %}
-    <form>
+     {% load staticfiles %}
+   <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="">The Guardian Sports News</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="">Search</a></li>
+      <li><a href="#">Crawl</a></li>
+    </ul>
+  </div>
+</nav>
+     <div class="searchbox">
+
+
+     <img src="{% static "SearchEngine/images/logo.png" %}" >
+
+     <div id="custom-search-input">
+        <div class="input-group col-md-8 col-sm-offset-2">
+            <input type="text" class="  search-query form-control" placeholder="Search" />
+            <span class="input-group-btn">
+                <button class="btn btn-danger" type="button">
+                    <span class=" glyphicon glyphicon-search"></span>
+                </button>
+            </span>
+        </div>
+    </div>
+
+         </div>
+
+         <!--
         <input type="text" id="search">
         <label for="search">Search</label>
-      <!-- <a ><button id="submit" type="submit" value="Search!" href="https://www.google.com.sg"></a>-->
-     <a href="https://www.google.com.sg/"><input type="button" id="submit" class="button" value="Submit"></a>
-    </form>
+          <a href="https://www.google.com.sg/"><input type="button" id="submit" class="button" value="Submit"></a>-->
+
  {% endblock %}
