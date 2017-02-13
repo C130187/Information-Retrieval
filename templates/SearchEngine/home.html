@@ -1,11 +1,10 @@
-{% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'SearchEngine/style.css' %}" />
+{% extends "SearchEngine/header.html" %}
 
+ {% block content %}
     <form>
         <input type="text" id="search">
         <label for="search">Search</label>
       <!-- <a ><button id="submit" type="submit" value="Search!" href="https://www.google.com.sg"></a>-->
      <a href="https://www.google.com.sg/"><input type="button" id="submit" class="button" value="Submit"></a>
     </form>
-
-
+ {% endblock %}
