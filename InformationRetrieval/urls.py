@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', include('SearchEngine.urls', namespace="SearchEngine")),  # this line added
+    url(r'^', include('SearchEngine.urls', namespace="SearchEngine")),  # this line added
+    #url(r'^search/', include('SearchEngine.urls', namespace="SearchEngine")),  # this line added
     #url(r'^search/', include('haystack.urls')),
 ]

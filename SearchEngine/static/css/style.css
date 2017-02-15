@@ -5,7 +5,7 @@ color: green;
 */
 
 body {
-   /* background: url(../SearchEngine/images/news.jpg) no-repeat center;*/
+   background: url(../SearchEngine/images/news.jpg) no-repeat center;
     /*#222;*/
 
     width: 100%;
@@ -134,10 +134,13 @@ label {
     border-radius:         3px;
     box-shadow:         0 1px 5px #000;
     height: 400px;
-    margin: 50px auto;
+   margin-right: auto;
+    margin-left: auto;
+    margin-top: 10%;
+    margin-bottom: 10%;
     padding: 0;
     width: 800px;
 }
 .navigation{
-    background-color: #2b669a;
+    background-color:#2b669a;
 }

@@ -3343,26 +3343,26 @@ fieldset[disabled] .btn-warning.focus {
 }
 .btn-danger {
   color: #fff;
-  background-color: #d9534f;
-  border-color: #d43f3a;
+  background-color: #286090;
+  border-color: #ffffff;
 }
 .btn-danger:focus,
 .btn-danger.focus {
   color: #fff;
-  background-color: #c9302c;
-  border-color: #761c19;
+  background-color: #286090;
+  border-color: #ffffff;
 }
 .btn-danger:hover {
   color: #fff;
-  background-color: #c9302c;
-  border-color: #ac2925;
+  background-color: #286090;
+  border-color: #ffffff;
 }
 .btn-danger:active,
 .btn-danger.active,
 .open > .dropdown-toggle.btn-danger {
   color: #fff;
-  background-color: #c9302c;
-  border-color: #ac2925;
+  background-color: #286090;
+  border-color: #ffffff;
 }
 .btn-danger:active:hover,
 .btn-danger.active:hover,
@@ -3374,8 +3374,8 @@ fieldset[disabled] .btn-warning.focus {
 .btn-danger.active.focus,
 .open > .dropdown-toggle.btn-danger.focus {
   color: #fff;
-  background-color: #ac2925;
-  border-color: #761c19;
+  background-color: #286090;
+  border-color: #ffffff;
 }
 .btn-danger:active,
 .btn-danger.active,
@@ -3391,11 +3391,11 @@ fieldset[disabled] .btn-danger:focus,
 .btn-danger.disabled.focus,
 .btn-danger[disabled].focus,
 fieldset[disabled] .btn-danger.focus {
-  background-color: #d9534f;
-  border-color: #d43f3a;
+  background-color: #286090;
+  border-color: #ffffff;
 }
 .btn-danger .badge {
-  color: #d9534f;
+  color: #286090;
   background-color: #fff;
 }
 .btn-link {
@@ -3820,6 +3820,7 @@ tbody.collapse.in {
 }
 .input-group[class*="col-"] {
   float: none;
+  padding-top:10%;
   padding-right: 0;
   padding-left: 0;
 }
@@ -4271,23 +4272,63 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   margin-bottom: 0;
   border-width: 1px 0 0;
 }
+
 .navbar-brand {
   float: left;
   height: 50px;
   padding: 15px 15px;
   font-size: 18px;
   line-height: 20px;
-  background-image: url(../SearchEngine/images/logo.png);
+
+}/*
+.navbar-brand {
+  padding: 0px;
 }
+.navbar-brand>img {
+ height: 100%;
+  padding: 15px;
+  width: auto;
+}*/
 .navbar-brand:hover,
 .navbar-brand:focus {
   text-decoration: none;
 }
+
+.navbar-brand>img {
+   max-height: 100%;
+   height: 100%;
+   width: auto;
+   margin: 0 auto;
+
+
+
+}
+
+/*
 .navbar-brand > img {
-  /*display: block;*/
-  display: inline-block;
-  width:auto;
-  height:10%;
+  display: block;
+
+}*/
+/* CSS Transform Align Navbar Brand Text ... This could also be achieved with table / table-cells */
+.navbar-alignit .navbar-header {
+	  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  height: 50px;
+}
+.navbar-alignit .navbar-brand {
+	top: 50%;
+	display: block;
+	position: relative;
+	height: auto;
+	transform: translate(0,-50%);
+	margin-right: 15px;
+  margin-left: 15px;
+}
+
+
+body {
+  font-family: "Lato";
 }
 @media (min-width: 768px) {
   .navbar > .container .navbar-brand,
