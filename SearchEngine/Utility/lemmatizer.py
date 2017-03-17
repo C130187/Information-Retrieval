@@ -1,6 +1,6 @@
-from nltk.tokenize import sent_tokenize, word_tokenize, line_tokenize
-from nltk.corpus   import stopwords
-from nltk.stem     import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 
 
 class Lemmatiser(object):
@@ -16,25 +16,13 @@ class Lemmatiser(object):
         words = word_tokenize(text)
         return words
 
-    def lemmatizeWord(self, lst):
-        """ Lemmatize the list of words.
-        :param words: List of all the words
+    def lemmatize_word(self, word_list):
+        """
+        Lemmatizes the list of words
+        :param word_list: List of all the words
         :return: the lemmatized version of the words
         """
         lemmatized_list = []
-        for item in lst:
+        for item in word_list:
             lemmatized_list.append(self.lemmatiser.lemmatize(item, 'a'))
         return lemmatized_list
-
-
-example_text = 'Hello Mr. Smith, how are you doing today? The weather is great and Python is awesome. The sky is pinkish-blue. You should not eat cardboard.'
-
-example = "This is an example showing stopword filtration."
-
-lemmatiser = Lemmatiser()
-y = lemmatiser.generate_token_stream('Cats are better when eaten with milk.')
-print
-print "Lemmatising"
-print lemmatiser.lemmatizeWord(y)
-
-words = word_tokenize(example)
