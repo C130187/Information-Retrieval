@@ -7,6 +7,7 @@ class CrawlForm(forms.Form):
                 (1, 'Crawl by Query'),
                 (2, 'Crawl all') ]
     selection = forms.ChoiceField(choices=OPTIONS, widget=forms.RadioSelect())
-    CATEGORIES = [('health', 'Health'),
+    CATEGORIES = [(0, 'Football'),
+                  (1, 'Sports')
                   ]
     crawlSelection = forms.MultipleChoiceField(CATEGORIES, False, forms.CheckboxSelectMultiple)
