@@ -4,6 +4,7 @@ from BeautifulSoup import BeautifulSoup
 
 # TODO ---- Figure out how to crawl for query, and where to start crawling
 # TODO ---- Connect to database
+# TODO ---- Figure out what data needs to be stored for every crawled item
 
 
 class Crawl:
