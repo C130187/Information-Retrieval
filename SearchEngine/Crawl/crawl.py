@@ -1,25 +1,42 @@
+import datetime
+import json
+import os
 import requests
+import time
 import urllib2
 from BeautifulSoup import BeautifulSoup
 
-# TODO ---- Figure out how to crawl for query, and where to start crawling
-# TODO ---- Connect to database
-# TODO ---- Figure out what data needs to be stored for every crawled item
+# TODO ---- Dump crawled data into json files per crawled page
 
 
 class Crawl:
     api_key = "44fe4958-51a9-48b2-acdd-7b8277b2ca83"
     api_test = 'test'
     base_url = 'http://content.guardianapis.com/search'
-    current_page = 1
+    page_size = 10
     crawled_information = {}
-    section = ('football', 'sport')
+    sections = ('sport', 'football')
 
     def __init__(self):
         print "Crawling initialised."
 
+    def get_section_arg(self, section):
+        if section in self.sections:
+            return '?section=' + section
+        else:
+            return '?section=' + 'sport'
+
+    def get_page_id_arg(self, page_id):
+        return '&page=' + str(page_id)
+
+    def get_api_key_arg(self):
+        return "&api-key=" + self.api_test
+
+    def get_query_arg(self, query):
+        return "&q=" + query
+
     def extract_article_paragraphs(self, web_url):
-        print "crawl_article()"
+        print "\nextract_article_paragraphs()"
         print "url:", web_url
         try:
             urlf = urllib2.urlopen(web_url)
@@ -50,59 +67,90 @@ class Crawl:
                     if text not in paragraph_list:
                         count += 1
                         paragraph_list.append(text)
-                        print count, text
-            print ""
-
+                        #print count, text
+            #print " "
+            return (paragraph_list)
         except urllib2.URLError:
             print "URLError encountered."
 
-    def crawl_page(self, section, page_id, page_size):
+    def crawl_page(self, crawl_url, page_id):
         print "\ncrawl_page()"
-        print "Page id: %d, Page size: %d" % (page_id, page_size)
+        print "Page id:", page_id
         self.crawled_information.update()
-        section_arg = '?section=' + section
-        page_arg = '&page=' + str(page_id)
-        page_size_arg = '&page-size=' + str(page_size)
-        api_arg = "&api-key=" + self.api_test
-        page_size_arg = '&page-size=' + str(page_size)
-        api_arg = "&api-key=" + self.api_test
-        crawl_url = self.base_url + section_arg + page_arg + page_size_arg + api_arg
+        crawl_url += self.get_page_id_arg(page_id)
+        print "Url: ", crawl_url
         response = requests.get(crawl_url)
         dictionary = {}
         dictionary.update(response.json())
         print crawl_url, dictionary
         articles = dictionary['response']['results']
         article_count = 0
-        for article in articles:
-            article_count += 1
-            article_web_url = article['webUrl']
-            print article_count, article['apiUrl']
-            self.extract_article_paragraphs(article_web_url)
+        # TODO ---- This part needs to be modified to dump data for every crawled page
+        file_path = os.getcwd() + "/JSON_files/crawled_sport" + str(1) + ".json"
+        with open(file_path, 'w') as json_file:
+            for article in articles:
+                article_count += 1
+                article_id = article['id']
+                article_web_url = article['webUrl']
+                print article_count, article['apiUrl'], article_id
+                paragraphs = self.extract_article_paragraphs(article_web_url)
+                print "Paragraphs for article:", len(paragraphs), ":", paragraphs
+                json.dump(paragraphs, json_file)
 
-    def crawl_all_pages(self, page_size):
-        for section in self.section:
-            print "\nSection:", section
-            section_arg = '?section=' + section
-            page_size_arg = '&page-size=' + str(page_size)
-            api_arg = "&api-key=" + self.api_test
-            crawl_url = self.base_url + section_arg + page_size_arg + api_arg
-            print crawl_url
-            response = requests.get(crawl_url)
-            dictionary = {}
-            dictionary.update(response.json())
-            total_articles = int(dictionary['response']['total'])
-            number_of_pages = int(dictionary['response']['pages'])
-            #print dictionary
-            print "Total number of articles:", total_articles
-            print "Total number of pages:", number_of_pages
-            for page in range(1, 2):
-                self.crawl_page(section, page, page_size)
+    def crawl_by_section(self, section, page_id, query=None):
+        print "crawl_by_section(), Query:", query
+        print "Crawling section:", section
+        crawl_url = self.base_url + self.get_section_arg(section) + self.get_api_key_arg()
+        if query is not None:
+            crawl_url += self.get_query_arg(query)
+        print crawl_url
+        response = requests.get(crawl_url)
+        dictionary = {}
+        dictionary.update(response.json())
+        file = os.getcwd() + "/JSON_files/crawl_info.json"
+        with open(file, 'w') as json_file:
+            json.dump(response.json(), json_file)
+        total_articles = int(dictionary['response']['total'])
+        number_of_pages = int(dictionary['response']['pages'])
+        # print dictionary
+        print "Total number of articles:", total_articles
+        print "Total number of pages:", number_of_pages
+        for page in range(page_id, page_id+1):
+            self.crawl_page(crawl_url, page)
 
+    def crawl_all_sections(self, page_id, query=None):
+        '''
+        Case for the selection of crawling all sections or crawling by query
+        :param query:
+        :return: None
+        '''
+
+        # Crawls both 'Football' and 'Sport' sections
+        if query is not None:
+            for section in self.sections:
+                self.crawl_by_section(section, page_id, query)
+        # Crawls query in both 'Football' and 'Sport' sections
+        else:
+            for section in self.sections:
+                self.crawl_by_section(section, page_id)
+
+    def crawl_dynamic(self, section_list, query=None, page_id=1):
+        print "crawl_dynamic()"
+        if query is not None:
+            self.crawl_all_sections(page_id, query=query)
+        elif len(section_list) == 1:
+            self.crawl_by_section(section_list[0], page_id)
+        else:
+            self.crawl_all_sections(page_id)
 
 def main():
     crawl = Crawl()
-    page_size = 50
-    crawl.crawl_all_pages(page_size)
+    crawl.crawl_by_section(section='sport', page_id=1, query='federer')
+    #crawl.crawl_query('Nadal')
+    #query = 'Rafael'
+    #print query
+    #query=query.replace(" ", "%20")
+    #print query
 
 if __name__ == '__main__':
     main()
