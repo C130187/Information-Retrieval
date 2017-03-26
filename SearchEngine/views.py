@@ -8,6 +8,7 @@ from .forms import CrawlForm
 def index(request):
     return render(request, 'SearchEngine/home.html')
 
+
 def search(request):
     return render(request, 'SearchEngine/search.html')
 
