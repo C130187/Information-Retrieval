@@ -1,10 +1,14 @@
+# -*- coding: utf-8 -*-
 import datetime
 import json
 import os
+import re
 import requests
 import time
 import urllib2
 from BeautifulSoup import BeautifulSoup
+from SearchEngine.Utility.lemmatizer import Lemmatiser
+from string import punctuation
 
 # TODO ---- Dump crawled data into json files per crawled page
 
@@ -16,6 +20,7 @@ class Crawl:
     page_size = 10
     crawled_information = {}
     sections = ('sport', 'football')
+    lemmatiser = Lemmatiser()
 
     def __init__(self):
         print "Crawling initialised."
@@ -58,6 +63,7 @@ class Crawl:
 
             soup = soup.findAll('p')
             count = 0
+            word_count = 0
             paragraph_list = []
             for paragraph in soup:
                 paragraph = str(paragraph)
@@ -66,10 +72,15 @@ class Crawl:
                     # Do not add again if it already exists
                     if text not in paragraph_list:
                         count += 1
+                        text = self.lemmatiser.eliminate_punctuators(text)
+                        r = re.compile(r'[{}]'.format(punctuation))
+                        new_text = r.sub(' ', text)
+                        word_count += len(new_text.split())
                         paragraph_list.append(text)
-                        #print count, text
+                        #print count, len(text), text
             #print " "
-            return (paragraph_list)
+            #print "Word-count:", word_count
+            return (paragraph_list, word_count)
         except urllib2.URLError:
             print "URLError encountered."
 
@@ -81,21 +92,34 @@ class Crawl:
         print "Url: ", crawl_url
         response = requests.get(crawl_url)
         dictionary = {}
+        print dictionary
         dictionary.update(response.json())
         print crawl_url, dictionary
         articles = dictionary['response']['results']
+        print "Number of articles:", len(articles)
         article_count = 0
         # TODO ---- This part needs to be modified to dump data for every crawled page
-        file_path = os.getcwd() + "/JSON_files/crawled_sport" + str(1) + ".json"
+        file_path = os.getcwd() + "/json_files/crawl_info_sport_" + str(page_id) + ".json"
         with open(file_path, 'w') as json_file:
             for article in articles:
-                article_count += 1
+                print "article_count:", article_count, "article: ", article
                 article_id = article['id']
                 article_web_url = article['webUrl']
                 print article_count, article['apiUrl'], article_id
-                paragraphs = self.extract_article_paragraphs(article_web_url)
+                (paragraphs, word_count) = self.extract_article_paragraphs(article_web_url)
+                print "Words in paragraph:", word_count
                 print "Paragraphs for article:", len(paragraphs), ":", paragraphs
-                json.dump(paragraphs, json_file)
+                if len(paragraphs) < 1:
+                    paragraphs.append("")
+                if len(paragraphs) < 2:
+                    paragraphs.append("")
+                print dictionary['response']['results'][article_count]['webTitle']
+                dictionary['response']['results'][article_count].update(
+                    {'firPara': paragraphs[0], 'secPara': paragraphs[1], "wordCnt": word_count}
+                )
+                article_count += 1
+                print "Updated dictionary:", dictionary
+            json.dump(dictionary, json_file, sort_keys=True)
 
     def crawl_by_section(self, section, page_id, query=None):
         print "crawl_by_section(), Query:", query
@@ -107,7 +131,7 @@ class Crawl:
         response = requests.get(crawl_url)
         dictionary = {}
         dictionary.update(response.json())
-        file = os.getcwd() + "/JSON_files/crawl_info.json"
+        file = os.getcwd() + "/json_files/crawl_inf.json"
         with open(file, 'w') as json_file:
             json.dump(response.json(), json_file)
         total_articles = int(dictionary['response']['total'])
@@ -115,7 +139,7 @@ class Crawl:
         # print dictionary
         print "Total number of articles:", total_articles
         print "Total number of pages:", number_of_pages
-        for page in range(page_id, page_id+1):
+        for page in range(page_id, page_id+2):
             self.crawl_page(crawl_url, page)
 
     def crawl_all_sections(self, page_id, query=None):
@@ -124,7 +148,6 @@ class Crawl:
         :param query:
         :return: None
         '''
-
         # Crawls both 'Football' and 'Sport' sections
         if query is not None:
             for section in self.sections:
@@ -134,7 +157,7 @@ class Crawl:
             for section in self.sections:
                 self.crawl_by_section(section, page_id)
 
-    def crawl_dynamic(self, section_list, query=None, page_id=1):
+    def crawl_dynamic(self, section_list=['sport', 'football'], query=None, page_id=1):
         print "crawl_dynamic()"
         if query is not None:
             self.crawl_all_sections(page_id, query=query)
@@ -145,12 +168,13 @@ class Crawl:
 
 def main():
     crawl = Crawl()
-    crawl.crawl_by_section(section='sport', page_id=1, query='federer')
+    crawl.crawl_dynamic()
     #crawl.crawl_query('Nadal')
     #query = 'Rafael'
     #print query
     #query=query.replace(" ", "%20")
     #print query
+    #strs = "Johnny.Appleseed!is:a*good&farmer"
 
 if __name__ == '__main__':
     main()
