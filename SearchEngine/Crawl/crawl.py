@@ -111,7 +111,7 @@ class Crawl:
         article_count = 0
         x=conn.cursor()
         # TODO ---- This part needs to be modified to dump data for every crawled page
-        file_path = os.getcwd() + "/json_files/crawl_info_sport_" + str(page_id) + ".json"
+        file_path = "/Users/shuvamnandi/PycharmProjects/InformationRetrieval/SearchEngine/Crawl/json_files/crawl_info_sport_" + str(page_id) + ".json"
         with open(file_path, 'w') as json_file:
             for article in articles:
                 #print "article_count:", article_count, "article: ", article
@@ -160,7 +160,7 @@ class Crawl:
         response = requests.get(crawl_url)
         dictionary = {}
         dictionary.update(response.json())
-        file = os.getcwd() + "/json_files/crawl_inf.json"
+        file = "/Users/shuvamnandi/PycharmProjects/InformationRetrieval/SearchEngine/Crawl/json_files/crawl_info.json"
         with open(file, 'w') as json_file:
             json.dump(response.json(), json_file)
         total_articles = int(dictionary['response']['total'])
