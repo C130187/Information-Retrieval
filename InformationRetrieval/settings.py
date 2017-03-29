@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-
+import mysql.connector
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -81,8 +81,17 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'MyDatabase'),
+    },
+    'Classification':{
+        'USER': 'root',
+        'PASSWORD': 'cz4034_information_retrieval',
+        'HOST': '104.199.252.211',
+        'DATABASE': 'INFORETRIEVAL',
+        'RAISE_ON_WARNINGS': 'TRUE',
     }
-}
+
+    }
+
 
 #Added by Saloni
 
