@@ -1,7 +1,9 @@
 {% extends "SearchEngine/header.html" %}
 
  {% block content %}
+     <body>
      {% load staticfiles %}
+     {% load bootstrap3 %}
 
    <nav class="navbar navbar-default navigation">
   <div class="container-fluid navigation">
@@ -9,7 +11,7 @@
       <a class="navbar-brand" href="">The Guardian Sports News</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="{% url 'SearchEngine:search' %}">Search</a></li>
+      <li class="active"><a href="{% url 'SearchEngine:home' %}">Search</a></li>
       <li><a href="#">Crawl</a></li>
         <li><a href="#">Classify</a></li>
     </ul>
@@ -23,22 +25,40 @@
 
      <img src="{% static "SearchEngine/images/logo.png" %}" >
 
-     <div id="custom-search-input">
-        <div class="input-group col-md-8 col-sm-offset-2">
-            <input type="text" class="  search-query form-control" placeholder="Search" />
-            <span class="input-group-btn">
-                <button class="btn btn-danger" type="button">
-                    <span class=" glyphicon glyphicon-search"></span>
-                </button>
-            </span>
+
+     <div class="input-group col-md-8 col-sm-offset-2">
+     <!--<div id="custom-search-input">
+        -->
+           <form action="" method="post"> <!--action="/search/"-->
+                {% csrf_token %}
+                {% bootstrap_form form %}
+             <div class="form-group">
+
+          <!-- <label for="searchquery">Search query: </label>
+            <input id="searchquery" type="text" name="searchquery" placeholder="Enter your search query" class="  search-query form-control">
+           <!-- <input type="text" class="  search-query form-control" placeholder="Search" />-->
+            <!--<span class="input-group-btn">-->
+                    <!--
+                <button class="btn btn-danger" type="submit"> <!--changed type from button to submit-->
+                    <!--<span class=" glyphicon glyphicon-search"></span>
+                </button>-->
+
+                     <button type="submit" class="btn btn-primary">
+                        Search
+                    </button>
+             </div>
+           </form>
+     <!--
         </div>
-    </div>
+    </div>-->
+     </div>
+     </div>
 
-         </div>
 
-         <!--
-        <input type="text" id="search">
-        <label for="search">Search</label>
-          <a href="https://www.google.com.sg/"><input type="button" id="submit" class="button" value="Submit"></a>-->
+
+
+
+</form>
+</body>
 
  {% endblock %}

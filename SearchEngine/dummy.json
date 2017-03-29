@@ -1,0 +1,24 @@
+[{
+ "id":"Solr115",
+ "name":"Solr 115",
+ "address":"House No - 100, LR Apache, 40702",
+ "comments":"Apache Solr comment 1",
+ "popularity":115,
+ "counts":115
+},
+{
+ "id":"Solr116",
+ "name":"Solr 116",
+ "address":"House No - 100, LR Apache, 40702",
+ "comments":"Apache Solr comment 1",
+ "popularity":116,
+ "counts":116
+},
+{
+ "id":"Solr117",
+ "name":"Solr 117",
+ "address":"House No - 100, LR Apache, 40702",
+ "comments":"Apache Solr comment 1",
+ "popularity":117,
+ "counts":117
+}]

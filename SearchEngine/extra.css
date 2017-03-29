@@ -1,0 +1,40 @@
+form {
+    background:  #222;
+    opacity: 0.9;
+    /* url(http://f.cl.ly/items/091X0J0C1q0H2D2z143n/bg.jpg) no-repeat top left;*/
+    background-clip: padding-box;
+
+    border-radius:         3px;
+   /* -moz-border-radius:    3px;
+    -o-border-radius:      3px;
+    -webkit-border-radius: 3px;*/
+
+    box-shadow:         0 1px 5px #000;
+  /*  -moz-box-shadow:    0 1px 5px #000;
+    -o-box-shadow:      0 1px 5px #000;
+    -webkit-box-shadow: 0 1px 5px #000;*/
+
+    height: 400px;
+
+    margin: 50px auto;
+    padding: 0;
+    /*position: center;*/
+    width: 400px;
+
+}
+
+.submit .form{
+    color:white;
+}
+
+label {
+    background: transparent url(http://f.cl.ly/items/2a2Z0V0L0J1p3V082d3r/icon-search.png) no-repeat top left;
+    cursor: pointer;
+    display: block;
+    height: 17px;
+    left: 90px;
+    position: relative;
+    text-indent: -99999px;
+    top: -21px;
+    width: 16px;
+}

@@ -14,3 +14,5 @@ class CrawlForm(forms.Form):
 
     crawlSelection = forms.MultipleChoiceField(CATEGORIES, False, forms.CheckboxSelectMultiple)
     '''
+class SearchForm(forms.Form):
+    searchquery = forms.CharField(label='Search', max_length=100, required=False)
