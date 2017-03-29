@@ -1,5 +1,38 @@
 <form action="" method="post">
     {% csrf_token %}
-    {{ form }}
-    <input type = "SUBMIT" value="Submit">
+
+
+    <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+    <script type="text/javascript">
+      // step 2: run function when clicking radio button
+      $(document).ready(function() {
+        $('#id_selection').on('change',function(){
+            // step 3: get selected value
+            var selected_value = $('input[name="selection"]:checked').val();
+            //alert(selected_value); // somehow this always gives "undefined value"
+
+            // step 4: hide/show dive based on selected_value
+             if(selected_value==0){
+                 $("#categories").show();
+                $("#query").hide();
+             }
+             else if(selected_value==1){
+                $("#query").show();
+                $("#categories").hide();
+             }
+         });
+      });
+    </script>
+
+    {{ form.selection }}
+    <div class="span4" id="categories" style="display:auto">
+        {{ form.crawlSelection }}<br/>
+    </div>
+
+    <div class="span4" id="query" style="display:auto">
+        {{ form.query }}<br/>
+
+    </div>
+
+    <input type = "SUBMIT" value="Submit" id="submit">
 </form>

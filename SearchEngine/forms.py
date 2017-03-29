@@ -11,7 +11,6 @@ class CrawlForm(forms.Form):
     CATEGORIES = [(0, 'Football'),
                   (1, 'Sports')
                   ]
-
     crawlSelection = forms.MultipleChoiceField(CATEGORIES, False, forms.CheckboxSelectMultiple)
     '''
 class SearchForm(forms.Form):
