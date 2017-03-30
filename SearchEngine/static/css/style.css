@@ -5,7 +5,7 @@ color: green;
 */
 
 body {
-   background: url(../SearchEngine/images/news.jpg) no-repeat center;
+   background:linear-gradient(rgba(255,255,255,0.5) ,rgba(255,255,255,.5)), url(../SearchEngine/images/news.jpg) no-repeat center;
     /*#222;*/
 
     width: 100%;
