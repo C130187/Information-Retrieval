@@ -5,6 +5,7 @@ from django.shortcuts import redirect,render
 from django.http import HttpResponse, HttpResponseRedirect
 from SearchEngine.Crawl.crawl import Crawl
 from .forms import CrawlForm, SearchForm
+from SearchEngine import search_index
 
 
 def index(request):
@@ -45,7 +46,7 @@ def thanks(request):
 def get_search_keyword(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
-        print "form:", form
+       # print "form:", form
         print "valid:", form.is_valid()
         if form.is_valid():
             if form.cleaned_data['searchquery']:
@@ -53,24 +54,28 @@ def get_search_keyword(request):
                 query_keyword = form_data['searchquery']
                 print "Keyword: ", query_keyword
                 print "Searching by query:", query_keyword
-                return send_search(request,query_keyword)
+                if 'quickSearch' in request.POST:
+                    return send_search(request,query_keyword,'quickSearch')
+                elif 'smartSearch' in request.POST:
+                    return send_search(request,query_keyword, 'smartSearch')
     else:
         form = SearchForm()
     return render(request, 'SearchEngine/home.html', {'form':form})
 
-def send_search(request, query_keyword):
+def send_search(request, query, searchType):
+    results = ''
+    num_results = 0
     # Setup a Solr instance. The timeout is optional.
-    solr = pysolr.Solr('http://localhost:8983/solr/newtest/', timeout=10)
+    if searchType=='quickSearch':
+        (num_results, results) = search_index.quick_search(query)
+    elif searchType=='smartSearch':
+        (num_results, results) = search_index.smart_search(query)
 
-    results = solr.search(Q(name=query_keyword))
-
-    resultlist = []
-
-    print("Saw {0} result(s).".format(len(results)))
-
+    resultlist=[]
     # Just loop over it to access the results.
     for result in results:
         resultlist.append(result)
         print("The result is '{}'.".format(result))
-        print("The address is '{}'.".format(result["address"][0].encode("ascii")))
-    return render(request, 'SearchEngine/search.html',{'query_keyword':query_keyword,'resultlist':resultlist})
+        #print("The address is '{}'.".format(result["address"][0].encode("ascii")))
+    return render(request, 'SearchEngine/search.html',{'query':query,'resultlist':resultlist, 'numResults': num_results})
+
