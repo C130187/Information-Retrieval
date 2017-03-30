@@ -91,7 +91,7 @@ class Crawl:
         conn = mysql.connector.connect(host='104.199.252.211',
                                        database='INFORETRIEVAL',
                                        user='root',
-                                       password='cz4034_information_retrieval')
+                                       password='cz4034')
         if(conn.is_connected()):
             print "connected"
         else:
