@@ -37,7 +37,7 @@ def get_crawl_keyword(request):
                 return HttpResponseRedirect('/thanks')
     else:
         form = CrawlForm()
-    return render(request, 'SearchEngine/crawl.html', {'form':form})
+    return render(request, 'SearchEngine/crawl.html', {'form': form})
 
 
 def thanks(request):
