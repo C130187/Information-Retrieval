@@ -1,17 +1,16 @@
-
-import datetime
 import json
-import os
 import re
-import requests
-import time
 import urllib2
-import mysql.connector
-from BeautifulSoup import BeautifulSoup
-from SearchEngine.Utility.lemmatizer import Lemmatiser
 from string import punctuation
-from InformationRetrieval import settings
-from SearchEngine import indexing
+
+import mysql.connector
+import requests
+from BeautifulSoup import BeautifulSoup
+
+from SearchEngine.Main import indexing
+from SearchEngine.Utility.lemmatizer import Lemmatiser
+
+
 # TODO ---- Dump crawled data into json files per crawled page
 
 
@@ -148,7 +147,7 @@ class Crawl:
                 #print "Updated dictionary:", dictionary
 
             json.dump(dictionary, json_file, sort_keys=True)
-            indexing.getFileToIndex(file_path)
+            indexing.get_file_to_index(file_path)
 
     def crawl_by_section(self, section, page_id, query=None):
         print "crawl_by_section(), Query:", query

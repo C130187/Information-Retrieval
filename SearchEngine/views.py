@@ -1,11 +1,9 @@
-from django.core.urlresolvers import reverse
-from solrq import Q
-import pysolr, json
-from django.shortcuts import redirect,render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render
+
 from SearchEngine.Crawl.crawl import Crawl
+from SearchEngine.Main import search
 from .forms import CrawlForm, SearchForm
-from SearchEngine import search_index
 
 
 def index(request):
@@ -67,9 +65,9 @@ def send_search(request, query, searchType):
     num_results = 0
     # Setup a Solr instance. The timeout is optional.
     if searchType=='quickSearch':
-        (num_results, results) = search_index.quick_search(query)
+        (num_results, results) = search.quick_search(query)
     elif searchType=='smartSearch':
-        (num_results, results) = search_index.smart_search(query)
+        (num_results, results) = search.smart_search(query)
 
     resultlist=[]
     # Just loop over it to access the results.
