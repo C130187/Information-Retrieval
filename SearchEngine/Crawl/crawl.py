@@ -1,17 +1,15 @@
 import json
-import re
-import urllib2
-from string import punctuation
-
 import mysql.connector
+import os
+import re
 import requests
+import urllib2
 from BeautifulSoup import BeautifulSoup
-
 from SearchEngine.Main import indexing
 from SearchEngine.Utility.lemmatizer import Lemmatiser
+from string import punctuation
 
-
-# TODO ---- Dump crawled data into json files per crawled page
+# TODO ---- Sort out encoding issue
 
 
 class Crawl:
@@ -87,15 +85,15 @@ class Crawl:
             print "URLError encountered."
 
     def crawl_page(self, crawl_url, page_id,section):
-        conn = mysql.connector.connect(host='104.199.252.211',
+        print "\ncrawl_page()"
+        db_connection = mysql.connector.connect(host='104.199.252.211',
                                        database='INFORETRIEVAL',
                                        user='root',
                                        password='cz4034')
-        if(conn.is_connected()):
-            print "connected"
+        if db_connection.is_connected():
+            print "DB connected"
         else:
-            print "not connected"
-        print "\ncrawl_page()"
+            print "DB not connected"
         #print "Page id:", page_id
         self.crawled_information.update()
         crawl_url += self.get_page_id_arg(page_id)
@@ -108,9 +106,11 @@ class Crawl:
         articles = dictionary['response']['results']
         #print "Number of articles:", len(articles)
         article_count = 0
-        x=conn.cursor()
+        db_cursor = db_connection.cursor()
         # TODO ---- This part needs to be modified to dump data for every crawled page
-        file_path = "/Users/shuvamnandi/PycharmProjects/InformationRetrieval/SearchEngine/Crawl/json_files/crawl_info_sport_" + str(page_id) + ".json"
+        dir_path = os.path.join(os.getcwd(), 'json_files')
+        file_name = "crawl_info_sport_" + str(page_id) + ".json"
+        file_path = os.path.join(dir_path, file_name)
         with open(file_path, 'w') as json_file:
             for article in articles:
                 #print "article_count:", article_count, "article: ", article
@@ -133,21 +133,20 @@ class Crawl:
                 article_count += 1
                 try:
                     print "Entered try block"
-
-                    x.execute("""INSERT INTO crawlData(apiUrl,firPara,id,isHosted,secPara,sectionId,sectionName,article_type,webPublicationDate,webTitle,webUrl,wordCnt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""" ,(article['apiUrl'],paragraphs[0],article['id'],'True',paragraphs[1],article['sectionId'],article['sectionName'],article['type'],article['webPublicationDate'],article['webTitle'],article['webUrl'],word_count))
+                    db_cursor.execute("""INSERT INTO crawlData(apiUrl,firPara,id,isHosted,secPara,sectionId,sectionName,article_type,webPublicationDate,webTitle,webUrl,wordCnt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""" ,(article['apiUrl'],paragraphs[0],article['id'],'True',paragraphs[1],article['sectionId'],article['sectionName'],article['type'],article['webPublicationDate'],article['webTitle'],article['webUrl'],word_count))
                     print("Committing")
-                    conn.commit()
+                    db_connection.commit()
                     print "Committed"
                 except:
                     print("Exception occurred")
-                    conn.rollback()
+                    db_connection.rollback()
 
 
 
                 #print "Updated dictionary:", dictionary
 
             json.dump(dictionary, json_file, sort_keys=True)
-            indexing.get_file_to_index(file_path)
+        indexing.get_file_to_index(file_path)
 
     def crawl_by_section(self, section, page_id, query=None):
         print "crawl_by_section(), Query:", query
