@@ -13,7 +13,7 @@ mysql = MySQL()
 
 def smart_search(query):
     query_params = {'q': '"' + query + '"', 'wt': 'json'}
-    url = 'http://localhost:8983/solr/cz4034_indexing/select?'
+    url = 'http://localhost:8983/solr/newtest/select?'
     url = url + urllib.urlencode(query_params)
     print url
     results = json.loads(urllib2.urlopen(url).read())
