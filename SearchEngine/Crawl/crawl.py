@@ -1,5 +1,5 @@
+import datetime, dateutil.parser
 import json
-import mysql.connector
 import os
 import re
 import requests
@@ -7,6 +7,7 @@ import urllib2
 from BeautifulSoup import BeautifulSoup
 from SearchEngine.Main import indexing
 from SearchEngine.Utility.lemmatizer import Lemmatiser
+from SearchEngine.Utility.sql import MySQL
 from string import punctuation
 
 # TODO ---- Sort out encoding issue
@@ -20,7 +21,7 @@ class Crawl:
     crawled_information = {}
     sections = ('sport', 'football')
     lemmatiser = Lemmatiser()
-
+    my_sql = MySQL()
 
     def __init__(self):
         print "Crawling initialised."
@@ -86,65 +87,48 @@ class Crawl:
 
     def crawl_page(self, crawl_url, page_id,section):
         print "\ncrawl_page()"
-        db_connection = mysql.connector.connect(host='104.199.252.211',
-                                       database='INFORETRIEVAL',
-                                       user='root',
-                                       password='cz4034')
-        if db_connection.is_connected():
-            print "DB connected"
-        else:
-            print "DB not connected"
-        #print "Page id:", page_id
+        # print "Page id:", page_id
         self.crawled_information.update()
         crawl_url += self.get_page_id_arg(page_id)
-        #print "Url: ", crawl_url
+        # print "Url: ", crawl_url
         response = requests.get(crawl_url)
         dictionary = {}
-        #print dictionary
+        # print dictionary
         dictionary.update(response.json())
-        #print crawl_url, dictionary
+        # print crawl_url, dictionary
         articles = dictionary['response']['results']
-        #print "Number of articles:", len(articles)
+        # print "Number of articles:", len(articles)
         article_count = 0
-        db_cursor = db_connection.cursor()
         # TODO ---- This part needs to be modified to dump data for every crawled page
         dir_path = os.path.join(os.getcwd(), 'json_files')
         file_name = "crawl_info_sport_" + str(page_id) + ".json"
         file_path = os.path.join(dir_path, file_name)
         with open(file_path, 'w') as json_file:
             for article in articles:
-                #print "article_count:", article_count, "article: ", article
+                # print "article_count:", article_count, "article: ", article
                 article_id = article['id']
 
                 article_web_url = article['webUrl']
-                #print article_count, article['apiUrl'], article_id
+                # print article_count, article['apiUrl'], article_id
                 (paragraphs, word_count) = self.extract_article_paragraphs(article_web_url)
-                #print "Words in paragraph:", word_count
-                #print "Paragraphs for article:", len(paragraphs), ":", paragraphs
+                # print "Words in paragraph:", word_count
+                # print "Paragraphs for article:", len(paragraphs), ":", paragraphs
                 if len(paragraphs) < 1:
                     paragraphs.append("")
                 if len(paragraphs) < 2:
                     paragraphs.append("")
 
-                #print dictionary['response']['results'][article_count]['webTitle']
+                # print dictionary['response']['results'][article_count]['webTitle']
                 dictionary['response']['results'][article_count].update(
-                    {'firPara': paragraphs[0], 'secPara': paragraphs[1], "wordCnt": word_count}
-                )
+                    {'firPara': paragraphs[0], 'secPara': paragraphs[1], "wordCnt": word_count})
                 article_count += 1
-                try:
-                    print "Entered try block"
-                    db_cursor.execute("""INSERT INTO crawlData(apiUrl,firPara,id,isHosted,secPara,sectionId,sectionName,article_type,webPublicationDate,webTitle,webUrl,wordCnt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""" ,(article['apiUrl'],paragraphs[0],article['id'],'True',paragraphs[1],article['sectionId'],article['sectionName'],article['type'],article['webPublicationDate'],article['webTitle'],article['webUrl'],word_count))
-                    print("Committing")
-                    db_connection.commit()
-                    print "Committed"
-                except:
-                    print("Exception occurred")
-                    db_connection.rollback()
-
-
-
-                #print "Updated dictionary:", dictionary
-
+                publication_date = article['webPublicationDate']
+                parsed_date = dateutil.parser.parse(publication_date)
+                sql_query = "INSERT INTO INFORETRIEVAL.Crawl (apiUrl, firPara, secPara, id, isHosted, sectionId, sectionName, articleType, webPublicationDate, webTitle, webUrl, wordCnt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                values = (article['apiUrl'], paragraphs[0], paragraphs[1], article['id'], 'True', article['sectionId'], article['sectionName'], article['type'], parsed_date, article['webTitle'], article['webUrl'], word_count)
+                # Dump crawled data into DB
+                self.my_sql.insert_query(sql_query, values)
+                # print "Updated dictionary:", dictionary
             json.dump(dictionary, json_file, sort_keys=True)
         indexing.get_file_to_index(file_path)
 
@@ -158,21 +142,25 @@ class Crawl:
         response = requests.get(crawl_url)
         dictionary = {}
         dictionary.update(response.json())
-        file = "/Users/shuvamnandi/PycharmProjects/InformationRetrieval/SearchEngine/Crawl/json_files/crawl_info.json"
-        with open(file, 'w') as json_file:
+        dir_path = os.path.join(os.getcwd(), 'json_files')
+        file_name = "crawl_info.json"
+        file_path = os.path.join(dir_path, file_name)
+        with open(file_path, 'w') as json_file:
             json.dump(response.json(), json_file)
         total_articles = int(dictionary['response']['total'])
         number_of_pages = int(dictionary['response']['pages'])
         # print dictionary
         print "Total number of articles:", total_articles
         print "Total number of pages:", number_of_pages
-        for page in range(page_id, page_id+2):
-            self.crawl_page(crawl_url, page,section)
+        for page in range(page_id, page_id+1):
+            print "Crawling page:", page_id
+            self.crawl_page(crawl_url, page, section)
 
     def crawl_all_sections(self, page_id, query=None):
         '''
         Case for the selection of crawling all sections or crawling by query
         :param query:
+        :param page_id: 
         :return: None
         '''
         # Crawls both 'Football' and 'Sport' sections
