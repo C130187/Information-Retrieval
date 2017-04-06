@@ -13,7 +13,7 @@ mysql = MySQL()
 
 def smart_search(query):
     query_params = {'q': '"' + query + '"', 'wt': 'json'}
-    url = 'http://localhost:8983/solr/newtest/select?'
+    url = 'http://localhost:8983/solr/cz4034_indexing/select?'
     url = url + urllib.urlencode(query_params)
     print url
     results = json.loads(urllib2.urlopen(url).read())
@@ -21,7 +21,10 @@ def smart_search(query):
     print results
     result_id = []
     for i in range(0, len(results['response']['docs'])):
-        result_id.append(results['response']['docs'][i]['id'])
+        article_id = results['response']['docs'][i]['id']
+        # print "ID", article_id
+        result_id.append(article_id)
+        get_article_info(str(article_id))
 
     # TODO - Use database to extract article's first paragraph, second paragraph and title based on article ID
     number = results['response']['numFound']
@@ -64,5 +67,12 @@ def quick_search(query):
     print number
     return results
 
+
+def get_article_info(article_id):
+    sql_query = "SELECT webTitle, firPara, secPara, webPublicationDate, wrdCnt from crawlData WHERE id=''".format(article_id)
+    result = mysql.execute_query(sql_query)
+    # print "Result:", result
+    return result
+
 #quick_search('with weeks')
-print smart_search('eight')
+smart_search('eight')
