@@ -13,6 +13,14 @@ class MySQL(object):
                                                      password=self.password)
         self.db_cursor = self.db_connection.cursor()
 
+    def insert_query(self, insert_query, values):
+        try:
+            self.db_cursor.execute(insert_query, values)
+            self.db_connection.commit()
+        except Exception as error:
+            print error
+            self.db_connection.rollback()
+
     def execute_query(self, sql_query):
         try:
             self.db_cursor.execute(sql_query)
@@ -31,9 +39,9 @@ class MySQL(object):
 
 def __main__():
     mysql_obj = MySQL()
-    result = mysql_obj.execute_query("SELECT id from crawlData WHERE id='sport/2017/apr/05/wisden-comes-out-fighting-free-to-air-cricket-coverage-england-alastair-cook'")
-    for id in result:
-        print "{}: 1. {} 2. ".format(id, id, id)
+    # result = mysql_obj.execute_query("SELECT id from crawlData WHERE id='sport/2017/apr/05/wisden-comes-out-fighting-free-to-air-cricket-coverage-england-alastair-cook'")
+    # for id in result:
+    #     print "{}: 1. {} 2. ".format(id, id, id)
 
 if __name__ == __main__():
     __main__()
