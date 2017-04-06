@@ -15,11 +15,11 @@ class Lemmatiser(object):
 
     def eliminate_punctuators(self, text):
         #text = text.replace('–'.decode('utf8'), '')
-        text = text.replace('’', '')
+        text = text.replace('’', "")
         text = text.replace('"', '')
         text = text.replace('“', '')
         text = text.replace('”', '')
-        text = text.replace(':', '')
+        text = text.replace(':', ' ')
         #text = text.replace('-', '')
         return text
 

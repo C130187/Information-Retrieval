@@ -3,10 +3,13 @@ import json
 import urllib
 import urllib2
 import os
+from SearchEngine.Utility.sql import MySQL
 
 # Setup a Solr instance. The timeout is optional.
 
 solr = pysolr.Solr('http://localhost:8983/solr/newtest/', timeout=10)
+mysql = MySQL()
+
 
 def smart_search(query):
     query_params = {'q': '"' + query + '"', 'wt': 'json'}
@@ -15,7 +18,12 @@ def smart_search(query):
     print url
     results = json.loads(urllib2.urlopen(url).read())
     # results = solr.search("'"+query+"'")
-    print results['response']['docs']
+    print results
+    result_id = []
+    for i in range(0, len(results['response']['docs'])):
+        result_id.append(results['response']['docs'][i]['id'])
+
+    # TODO - Use database to extract article's first paragraph, second paragraph and title based on article ID
     number = results['response']['numFound']
     # if (number == 0): #do spellcheck
     #     collations = results['spellcheck']['collations']
@@ -48,11 +56,13 @@ def quick_search(query):
     url = 'http://localhost:8983/solr/newtest/select?'
     url = url + urllib.urlencode(query_params)
     results = json.loads(urllib2.urlopen(url).read())
-    print(results)
+    result_id = []
+    for i in range(0, len(results['response']['docs'])):
+        result_id.append(results['response']['docs'][i]['id'])
+    print results
     number = results['response']['numFound']
-    print(number)
+    print number
     return results
 
 #quick_search('with weeks')
-smart_search('with eight')
-
+print smart_search('eight')
